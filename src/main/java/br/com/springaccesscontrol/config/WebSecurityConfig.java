@@ -1,5 +1,6 @@
 package br.com.springaccesscontrol.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -13,6 +14,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import br.com.springaccesscontrol.repository.UserRepository;
 import br.com.springaccesscontrol.security.JwtAuthenticationFilter;
 import br.com.springaccesscontrol.security.JwtAuthorizationFilter;
 
@@ -21,6 +23,9 @@ import br.com.springaccesscontrol.security.JwtAuthorizationFilter;
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	
 	private UserDetailsService userDetailsService;
+	
+	@Autowired
+	private UserRepository userRepository;
 	
 	public WebSecurityConfig(UserDetailsService userDetailsService) {
         this.userDetailsService = userDetailsService;
@@ -37,7 +42,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-        .addFilter(new JwtAuthorizationFilter(authenticationManager()))
+        .addFilter(new JwtAuthorizationFilter(authenticationManager(), userRepository))
         .authorizeRequests()
 //            .antMatchers("/").hasAnyAuthority("USER", "CREATOR", "EDITOR", "ADMIN")
 //            .antMatchers("/new").hasAnyAuthority("ADMIN", "CREATOR")

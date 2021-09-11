@@ -19,15 +19,14 @@ import com.auth0.jwt.JWT;
 
 import br.com.springaccesscontrol.domain.User;
 import br.com.springaccesscontrol.repository.UserRepository;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
 	
 	private UserRepository userRepository;
 
-	public JwtAuthorizationFilter(AuthenticationManager authenticationManager) {
+	public JwtAuthorizationFilter(AuthenticationManager authenticationManager, UserRepository userRepository) {
 		super(authenticationManager);
+		this.userRepository = userRepository;
 	}
 	
 	@Override
@@ -57,7 +56,7 @@ public class JwtAuthorizationFilter extends BasicAuthenticationFilter {
                     .getSubject();
 
             if (username != null) {
-                User user = userRepository.findByUsername(username);
+                User user = this.userRepository.findByUsername(username);
                 CustomUserDetails userDetails = new CustomUserDetails(user);
                 UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(username, null, userDetails.getAuthorities());
                 return auth;

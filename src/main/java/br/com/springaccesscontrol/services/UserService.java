@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 
 import br.com.springaccesscontrol.domain.User;
 import br.com.springaccesscontrol.repository.UserRepository;
-import lombok.AllArgsConstructor;
 
 @Service
 public class UserService {
